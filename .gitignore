@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Lakehouse runtime artifacts (auto-generated, not for version control)
+iceberg_catalog.db
+audit_log.json
+ingested_files.json
+pipeline.log
+
+# Iceberg table data
+gold/
+
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
