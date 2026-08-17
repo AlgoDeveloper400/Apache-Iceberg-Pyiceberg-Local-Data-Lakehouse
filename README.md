@@ -1,3 +1,20 @@
+# Problem Statement
+
+Learning and experimenting with Apache Iceberg normally means standing up infrastructure you don't actually need for local development: an S3 bucket, a Glue or Hive metastore, and often a Trino or Spark cluster just to read and write a table. That's a lot of setup and cost for something as simple as testing how ingestion, deduplication, and snapshot management behave on a folder of tick data files.
+
+This project was built to solve that problem directly. It's a fully local Iceberg lakehouse, built on PyIceberg, PyArrow, and a SQLite catalog, that ingests time-series Bid/Ask tick data from Parquet files with production-style guarantees but none of the cloud or cluster overhead. Specifically, it needed to:
+
+- Run a real Iceberg catalog entirely on the local filesystem, with no S3, Glue, or Hive dependency
+- Ingest dropped-in Parquet files automatically, whether triggered manually, on a schedule, or via a folder watcher
+- Catch bad data before it lands in a table: missing columns, excessive nulls, invalid prices, insufficient row counts
+- Avoid duplicate or redundant ingestion, both at the row level (matching timestamps) and the file level (unchanged files via checksum)
+- Manage snapshots automatically so the catalog doesn't grow unbounded, while still retaining enough history to be safe
+- Keep a full audit trail of what was ingested, skipped, or rejected on every run
+
+Everything below, from the pipeline and scheduler through the data quality checks and snapshot management, is the system built to solve that problem end to end.
+
+---
+
 # 🏔️ Local Apache Iceberg Mini Lakehouse
 
 A production-grade, local Apache Iceberg data lakehouse pipeline built with **PyIceberg** and **PyArrow**. Designed for ingesting time-series financial tick data (Bid/Ask) stored as Parquet files, with a full suite of data quality, deduplication, snapshot management, and audit logging — all running on your local filesystem with a SQLite catalog.
